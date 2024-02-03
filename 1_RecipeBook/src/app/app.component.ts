@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = '1_RecipeBook';
+  title = 'RecipeBook';
 }
