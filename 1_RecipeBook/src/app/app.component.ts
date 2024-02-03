@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
+import { RecipesComponent } from './recipes/recipes.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, ShoppingListComponent, RecipesComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
