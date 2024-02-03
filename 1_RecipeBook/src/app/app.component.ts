@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from './header/header.component';
+import { HeaderComponent, Site } from './header/header.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { RecipesComponent } from './recipes/recipes.component';
 
@@ -13,4 +13,11 @@ import { RecipesComponent } from './recipes/recipes.component';
 })
 export class AppComponent {
   title = 'RecipeBook';
+
+  Site = Site;
+  currentSite: Site = Site.Recipes;
+
+  onNavigation(site: Site) {
+    this.currentSite = site;
+  }
 }
