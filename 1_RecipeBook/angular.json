@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "1_RecipeBook": {
+    "RecipeBook": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/1-recipe-book",
+            "outputPath": "dist/recipe-book",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "1_RecipeBook:build:production"
+              "buildTarget": "RecipeBook:build:production"
             },
             "development": {
-              "buildTarget": "1_RecipeBook:build:development"
+              "buildTarget": "RecipeBook:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "1_RecipeBook:build"
+            "buildTarget": "RecipeBook:build"
           }
         },
         "test": {
