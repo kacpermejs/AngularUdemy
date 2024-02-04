@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="col-md-5">
+    <div class="" [ngClass]="selectedRecipe ? 'col-md-5' : 'col-xs-12'">
         <app-recipe-list (onRecipeListItemSelected)="storeSelectedRecipe($event)"></app-recipe-list>
     </div>
-    <div class="col-md-7">
-        <app-recipe-detail *ngIf="selectedRecipe" [recipe]="selectedRecipe"></app-recipe-detail>
+    <div *ngIf="selectedRecipe" class="col-md-7">
+        <app-recipe-detail [recipe]="selectedRecipe"></app-recipe-detail>
     </div>
 </div>

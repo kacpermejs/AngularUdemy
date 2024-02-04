@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
+import { DropdownDirective } from '../directives/dropdown.directive';
 
 export enum Site {
   Shopping = 'shopping',
@@ -9,7 +10,7 @@ export enum Site {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DropdownDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
