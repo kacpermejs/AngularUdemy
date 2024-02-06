@@ -1,25 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
-import { Recipe } from '../models/recipe.model';
 import { CommonModule } from '@angular/common';
-import { RecipeService } from '../services/recipe/recipe.service';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-recipes',
   standalone: true,
-  imports: [CommonModule, RecipeListComponent, RecipeDetailComponent],
+  imports: [CommonModule, RouterModule, RecipeListComponent, RecipeDetailComponent],
   templateUrl: './recipes.component.html',
   styleUrl: './recipes.component.css'
 })
 export class RecipesComponent implements OnInit {
-  selectedRecipe?: Recipe;
+  isChildRouteActivated = false;
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(private activatedRoute: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
-    this.recipeService.recipeSelected.subscribe((r: Recipe) => {
-      this.selectedRecipe = r;
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkChildRoute();
     });
+  }
+
+  checkChildRoute() {
+    if (this.activatedRoute.firstChild) {
+      this.isChildRouteActivated = true;
+    } else {
+      this.isChildRouteActivated = false;
+    }
   }
 }
