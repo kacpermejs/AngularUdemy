@@ -3,11 +3,12 @@ import { Recipe } from '../../models/recipe.model';
 import { CommonModule } from '@angular/common';
 import { RecipeItemComponent } from '../recipe-item/recipe-item.component';
 import { RecipeService } from '../../services/recipe/recipe.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [CommonModule, RecipeItemComponent],
+  imports: [CommonModule, RouterModule, RecipeItemComponent],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css'
 })
