@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ShoppingListEditComponent } from './shopping-list-edit/shopping-list-edit.component';
 import { Ingredient } from '../models/ingredient.model';
 import { CommonModule } from '@angular/common';
 import { ShoppingListService } from '../services/shopping-list/shopping-list.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-list',
@@ -11,11 +12,12 @@ import { ShoppingListService } from '../services/shopping-list/shopping-list.ser
   templateUrl: './shopping-list.component.html',
   styleUrl: './shopping-list.component.css'
 })
-export class ShoppingListComponent implements OnInit {
+export class ShoppingListComponent implements OnInit, OnDestroy {
   ingredients: Ingredient[] = [];
+  igAddedSubscription: Subscription;
 
   constructor(private shoppingListService: ShoppingListService) {
-    shoppingListService.ingredientAdded.subscribe((ingredients: Ingredient[]) => {
+    this.igAddedSubscription = shoppingListService.ingredientAdded.subscribe((ingredients: Ingredient[]) => {
       this.ingredients = ingredients;
     });
   }
@@ -23,5 +25,8 @@ export class ShoppingListComponent implements OnInit {
   ngOnInit(): void {
     this.ingredients = this.shoppingListService.getIngredients();
   }
-
+  
+  ngOnDestroy(): void {
+    this.igAddedSubscription.unsubscribe();
+  }
 }
