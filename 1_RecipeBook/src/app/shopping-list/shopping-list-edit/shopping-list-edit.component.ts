@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { Ingredient } from '../../models/ingredient.model';
 import { ShoppingListService } from '../../services/shopping-list/shopping-list.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-list-edit',
@@ -11,18 +12,60 @@ import { ShoppingListService } from '../../services/shopping-list/shopping-list.
   templateUrl: './shopping-list-edit.component.html',
   styleUrl: './shopping-list-edit.component.css'
 })
-export class ShoppingListEditComponent {
+export class ShoppingListEditComponent implements OnInit, OnDestroy {
 
-  @ViewChild('nameInput') nameInputRef: ElementRef;
-  @ViewChild('amountInput') amountInputRef: ElementRef;
+  @ViewChild('f', {static: false}) slForm: NgForm;
+  igEditSubscription: Subscription;
+  editMode = false;
+  editedIndex?: number;
+  editedItem?: Ingredient;
 
   constructor(private shoppingListService: ShoppingListService) {}
   
-  onAddClicked() {
-    const ingName = this.nameInputRef.nativeElement.value;
-    const ingAmount = this.amountInputRef.nativeElement.value;
-    const newIngredient = new Ingredient(ingName, ingAmount);
+  ngOnInit(): void {
+    this.igEditSubscription = this.shoppingListService.startedEditing.subscribe(
+        (id: number) => {
+          this.editedIndex = id;
+          this.editMode = true;
+          this.editedItem = this.shoppingListService.getIngredient(id);
+          this.slForm.setValue({
+            name: this.editedItem.name,
+            amount: this.editedItem.amount
+          })
+        }
+      );
+  }
 
-    this.shoppingListService.addIngredient(newIngredient);
+  private formReset() {
+    this.slForm.reset();
+    this.slForm.form.patchValue({
+      amount: 0
+    })
+  }
+  
+  onClear() {
+    this.formReset();
+    this.editMode = false;
+  }
+
+  onSubmit() {
+    const value = this.slForm.value;
+    const newIngredient = new Ingredient(value.name, value.amount);
+    if (this.editMode) {
+      this.shoppingListService.updateIngredient(this.editedIndex, newIngredient);
+    } else {
+      this.shoppingListService.addIngredient(newIngredient);
+    }
+    this.editMode = false;
+    this.formReset();
+  }
+
+  onDelete() {
+    this.onClear();
+    this.shoppingListService.deleteIngredient(this.editedIndex);
+  }
+
+  ngOnDestroy(): void {
+    this.igEditSubscription.unsubscribe();
   }
 }
