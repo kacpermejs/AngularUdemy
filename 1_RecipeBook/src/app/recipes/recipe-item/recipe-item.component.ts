@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './recipe-item.component.css'
 })
 export class RecipeItemComponent {
+  @Input() id: number;
   @Input() recipe: Recipe;
   
   constructor(private recipeService: RecipeService) {}
