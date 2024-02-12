@@ -1,7 +1,7 @@
 import {inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from '@angular/router';
-import { Recipe } from '../../models/recipe.model';
-import { RecipeService } from './recipe.service';
+import { Recipe } from '../models/recipe.model';
+import { RecipeService } from '../services/recipe/recipe.service';
 
 export const recipeResolver: ResolveFn<Recipe> = (
   route: ActivatedRouteSnapshot,
