@@ -4,6 +4,8 @@ import { DropdownDirective } from '../directives/dropdown.directive';
 import { RouterModule } from '@angular/router';
 import { DataStorageService } from '../services/data-storage/data-storage.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 export enum Site {
   Shopping = 'shopping',
@@ -17,11 +19,23 @@ export enum Site {
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   Site = Site;
   collapsed = true;
+  userSub: Subscription;
+  isAuthenticated = false;
 
-  constructor(private dataService: DataStorageService) {}
+  constructor(private dataService: DataStorageService, private auth: AuthService) {}
+  
+  ngOnInit(): void {
+    this.userSub = this.auth.user.subscribe( user => {
+      this.isAuthenticated = !!user;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe()
+  }
   
   onSaveData() {
     this.dataService.storeRecipes();
