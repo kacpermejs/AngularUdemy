@@ -1,24 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthResponseData, AuthService } from '../services/auth/auth.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AlertComponent } from '../alert/alert.component';
+import { PlaceholderDirective } from '../directives/placeholder.directive';
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent, AlertComponent, PlaceholderDirective],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
-export class AuthComponent {
+export class AuthComponent implements OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error?: string = null;
 
+  @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
+  closeSub: Subscription;
+
   constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnDestroy(): void {
+    if (this.closeSub) {
+      this.closeSub.unsubscribe();
+    }
+  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -44,12 +55,27 @@ export class AuthComponent {
         this.isLoading = false;
         this.router.navigate(['/recipes']);
       },
-      error: e => {
-        this.error = e;
+      error: errorMessage => {
+        this.error = errorMessage;
+        this.showErrorAlert(errorMessage);
         this.isLoading = false;
       }
     }); 
 
     form.reset();
+  }
+
+  onHandleError() {
+    this.error = null;
+  }
+
+  private showErrorAlert(message: string) {
+    this.alertHost.viewContainerRef.clear();
+    const compRef = this.alertHost.viewContainerRef.createComponent(AlertComponent);
+    compRef.instance.message = message;
+    this.closeSub = compRef.instance.close.subscribe( () => {
+      this.closeSub.unsubscribe();
+      this.alertHost.viewContainerRef.clear();
+    });
   }
 }
