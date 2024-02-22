@@ -12,7 +12,7 @@ export const recipesResolver: ResolveFn<Recipe[]> = (
   const recipes = service.getRecipes();
 
   if (recipes.length === 0)
-    return inject(DataStorageService).getRecipes();
+    return inject(DataStorageService).fetchRecipes();
   else
     return recipes;
 

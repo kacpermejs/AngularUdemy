@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private fetchData() {
-    this.dataService.getRecipes().subscribe();
+    this.dataService.fetchRecipes().subscribe();
   }
 
   onFetchData() {

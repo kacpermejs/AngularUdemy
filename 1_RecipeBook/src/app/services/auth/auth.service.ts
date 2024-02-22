@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 
 export interface AuthResponseData {
@@ -17,7 +17,7 @@ export interface AuthResponseData {
 })
 export class AuthService {
 
-  user: Subject<User> = new Subject<User>();
+  user = new BehaviorSubject<User>(null);
 
   private key = 'AIzaSyAAzZW6nq9ZOBsclNrRvvICltSAb9o-TJc';
   private singUpEndpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + this.key;

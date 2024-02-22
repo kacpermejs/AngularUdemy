@@ -14,7 +14,7 @@ export class DataStorageService {
 
   constructor(private http: HttpClient, private recipeService: RecipeService) { }
 
-  getRecipes() {
+  fetchRecipes() {
     return this.http.get<Recipe[]>(this.recipesEndpoint)
     .pipe(
       map( recipes => {

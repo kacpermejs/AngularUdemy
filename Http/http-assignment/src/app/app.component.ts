@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, FormsModule, HttpClientModule],
+  imports: [CommonModule, RouterOutlet, FormsModule],
   providers: [PostsService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
