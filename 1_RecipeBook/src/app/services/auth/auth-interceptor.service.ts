@@ -10,15 +10,12 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private auth: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('interceptor');
     return this.auth.user.pipe(
       take(1),
       exhaustMap( user => {
-        console.log('try auth')
         if (!user) {
           return next.handle(req);
         }
-        console.log('user set')
 
         const modifiedReq = req.clone(
           {

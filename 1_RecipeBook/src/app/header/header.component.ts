@@ -50,4 +50,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.fetchData();
   }
   
+  onLogout() {
+    this.auth.logout();
+  }
+
 }
