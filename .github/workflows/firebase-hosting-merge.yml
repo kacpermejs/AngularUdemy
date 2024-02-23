@@ -6,17 +6,21 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - master
+
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./1_RecipeBook
     steps:
       - uses: actions/checkout@v4
-      - run: cd 1_RecipeBook
-      - run: pwd
       - run: npm install
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
+          entryPoint: ./1_RecipeBook
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NG_COURSE_RECIPE_BOOK_74329 }}'
           channelId: live

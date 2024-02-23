@@ -11,6 +11,9 @@ jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./1_RecipeBook
     steps:
       - uses: actions/checkout@v4
       - run: cd 1_RecipeBook
@@ -19,6 +22,7 @@ jobs:
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
+          entryPoint: ./1_RecipeBook
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NG_COURSE_RECIPE_BOOK_74329 }}'
           projectId: ng-course-recipe-book-74329
