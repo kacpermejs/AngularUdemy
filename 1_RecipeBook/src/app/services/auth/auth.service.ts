@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment.development';
 
 export interface AuthResponseData {
   idToken: string;
@@ -22,7 +23,7 @@ export class AuthService {
   
   private tokenExpirationTimer: any;
 
-  private key = 'AIzaSyAAzZW6nq9ZOBsclNrRvvICltSAb9o-TJc';
+  private key = environment.appKey;
   private singUpEndpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + this.key;
   private singInEndpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + this.key;
 
