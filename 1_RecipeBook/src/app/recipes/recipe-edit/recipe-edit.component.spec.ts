@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecipeEditComponent } from './recipe-edit.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RecipeEditComponent', () => {
   let component: RecipeEditComponent;
@@ -8,7 +9,7 @@ describe('RecipeEditComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecipeEditComponent]
+      imports: [RecipeEditComponent, RouterTestingModule]
     })
     .compileComponents();
     

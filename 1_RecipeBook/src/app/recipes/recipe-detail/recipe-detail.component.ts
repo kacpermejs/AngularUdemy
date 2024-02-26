@@ -15,8 +15,8 @@ import { RecipeService } from '../../services/recipe/recipe.service';
 })
 export class RecipeDetailComponent implements OnInit {
 
-  recipe: Recipe;
-  id: number;
+  recipe?: Recipe;
+  id?: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
