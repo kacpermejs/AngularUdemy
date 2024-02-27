@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { CounterService } from '../counter.service';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -8,22 +9,14 @@ import { CounterService } from '../counter.service';
   templateUrl: './counter-output.component.html',
   styleUrls: ['./counter-output.component.css'],
   standalone: true,
+  imports: [AsyncPipe]
 })
-export class CounterOutputComponent implements OnInit, OnDestroy {
-  counter = 0;
-  counterServiceSub?: Subscription;
+export class CounterOutputComponent {
 
-  constructor(private counterService: CounterService) {}
-
-  ngOnInit(): void {
-    this.counterServiceSub = this.counterService.counterChanged.subscribe(
-      (newVal) => (this.counter = newVal)
-    );
+  counter$: Observable<number>;
+  
+  constructor(private store: Store<{counter: number}>) {
+    this.counter$ = store.select('counter');
   }
 
-  ngOnDestroy(): void {
-    if (this.counterServiceSub) {
-      this.counterServiceSub.unsubscribe();
-    }
-  }
 }
