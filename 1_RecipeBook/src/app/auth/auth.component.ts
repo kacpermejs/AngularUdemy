@@ -19,6 +19,7 @@ export class AuthComponent implements OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error?: string = null;
+  authSub: Subscription;
 
   @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
   closeSub: Subscription;
@@ -28,6 +29,9 @@ export class AuthComponent implements OnDestroy {
   ngOnDestroy(): void {
     if (this.closeSub) {
       this.closeSub.unsubscribe();
+    }
+    if (this.authSub) {
+      this.authSub.unsubscribe();
     }
   }
 
@@ -50,7 +54,7 @@ export class AuthComponent implements OnDestroy {
       authObs = this.authService.signup(email, password); 
     }
 
-    authObs.subscribe({
+    this.authSub = authObs.subscribe({
       next: res => {
         this.isLoading = false;
         this.router.navigate(['/recipes']);
