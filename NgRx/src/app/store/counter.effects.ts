@@ -6,6 +6,11 @@ import { Store } from "@ngrx/store";
 
 @Injectable()
 export class CounterEffects {
+  constructor(
+    private actions$: Actions,
+    private store: Store<{ counter: number }>
+  ) {}
+
   loadCount = createEffect(() =>
     this.actions$.pipe(
       ofType(init),
@@ -31,9 +36,4 @@ export class CounterEffects {
       ),
     { dispatch: false }
   );
-
-  constructor(
-    private actions$: Actions,
-    private store: Store<{ counter: number }>
-  ) {}
 }
