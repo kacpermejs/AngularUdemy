@@ -6,7 +6,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { AuthInterceptorService } from './services/auth/auth-interceptor.service';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { shoppingListReducer } from './store/shopping-list/shopping-list.reducer';
+import * as fromShoppingList from './store/shopping-list/shopping-list.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
         multi: true
     },
     provideStore({
-      shoppingList: shoppingListReducer
+      shoppingList: fromShoppingList.shoppingListReducer
     }),
     provideEffects([
       
