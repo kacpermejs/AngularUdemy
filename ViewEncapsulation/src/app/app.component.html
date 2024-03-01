@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 50px;">
+<div class="container">
   <div class="row">
     <app-game-control (intervalEvent)="onNumberIntervalFired($event)"></app-game-control>
   </div>
@@ -12,5 +12,18 @@
       <app-even *ngFor="let num of evenNumbers" [number]="num"></app-even>
     </div>
     
+  </div>
+  
+  <!-- Services -->
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-active-users></app-active-users>
+      <app-inactive-users></app-inactive-users>
+    </div>
+    <!--
+      Optimize this app by adding a UsersService which manages the active and inactive users.
+
+      Also add a CounterService which counts the number of active->inactive and inactive->active actions.
+    -->
   </div>
 </div>
