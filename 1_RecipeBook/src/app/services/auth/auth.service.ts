@@ -27,7 +27,7 @@ export class AuthService {
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      this.singUpEndpoint + '',
+      this.singUpEndpoint,
       {
         email: email,
         password: password,
@@ -42,7 +42,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      this.singInEndpoint + '',
+      this.singInEndpoint,
       {
         email: email,
         password: password,
@@ -81,7 +81,7 @@ export class AuthService {
 
     if (loadedUser.token) { //token valid
       // this.user.next(loadedUser);
-      this.store.dispatch(AuthActions.login({
+      this.store.dispatch(AuthActions.authenticationSuccess({
         email: loadedUser.email,
         id: loadedUser.id,
         _token: loadedUser.token,
@@ -143,7 +143,7 @@ export class AuthService {
     );
     
     // this.user.next(user);    
-    this.store.dispatch(AuthActions.login({
+    this.store.dispatch(AuthActions.authenticationSuccess({
       email: r.email,
       id: r.localId,
       _token: r.idToken,

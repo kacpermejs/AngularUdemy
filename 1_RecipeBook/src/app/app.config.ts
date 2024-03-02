@@ -9,6 +9,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { environment } from '../environments/environment.development';
 import * as fromApp from './store/app.reducer';
+import { AuthEffects } from './store/auth/auth.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideStore(fromApp.appReducer),
     provideEffects([
-      
+      AuthEffects
     ]),
     provideStoreDevtools({logOnly: environment.production})
 ]
