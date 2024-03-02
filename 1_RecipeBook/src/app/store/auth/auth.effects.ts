@@ -9,6 +9,46 @@ import { environment } from "../../../environments/environment";
 import * as fromApp from "../app.reducer";
 import { Router } from "@angular/router";
 
+const handleAuthentication = (resData: AuthResponseData) => {
+  const expirationDate = new Date(
+    new Date().getTime() + +resData.expiresIn * 1000
+  );
+  return AuthActions.authenticationSuccess({
+    email: resData.email,
+    id: resData.localId,
+    _token: resData.idToken,
+    _tokenExpirationDate: expirationDate,
+  });
+};
+
+const handleError = (errorRes: any) => {
+  let errorMessage = 'An unknown error occurred!';
+  if (!errorRes.error || !errorRes.error.error) {
+    return of(AuthActions.authenticationFail({ errorMessage }));
+  }
+  switch (errorRes.error.error.message) {
+    case 'EMAIL_EXISTS':
+      errorMessage = 'This email exists already!';
+      break;
+    case 'EMAIL_NOT_FOUND':
+      errorMessage = 'This email not found!';
+      break;
+    case 'INVALID_PASSWORD':
+      errorMessage = 'Invalid password!';
+      break;
+    case 'INVALID_LOGIN_CREDENTIALS':
+      errorMessage = 'Invalid login or password!';
+      break;
+    case 'USER_DISABLED':
+      errorMessage = 'User disabled!';
+      break;
+
+    default:
+      break;
+  }
+  return of(AuthActions.authenticationFail({ errorMessage }));
+}
+
 @Injectable()
 export class AuthEffects {
   private readonly key = environment.appKey;
@@ -25,66 +65,44 @@ export class AuthEffects {
     private router: Router
   ) {}
 
-  authLogin = createEffect(() =>
+  authSignup = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActions.loginStart),
+      ofType(AuthActions.signUpStart),
       switchMap((authData) => {
-        return this.http.post<AuthResponseData>(
-          this.singInEndpoint,
-            {
-              email: authData.email,
-              password: authData.password,
-              returnSecureToken: true,
-            }
-          )
-          .pipe(
-            map((resData) => {
-              const expirationDate = new Date(
-                new Date().getTime() + +resData.expiresIn * 1000
-              );
-              return AuthActions.authenticationSuccess({
-                email: resData.email,
-                id: resData.localId,
-                _token: resData.idToken,
-                _tokenExpirationDate: expirationDate,
-              });
-            }),
-            catchError((errorRes) => {
-              let errorMessage = 'An unknown error occurred!';
-              if (!errorRes.error || !errorRes.error.error) {
-                return of(AuthActions.authenticationFail({errorMessage}));
-              }
-              switch (errorRes.error.error.message) {
-                case 'EMAIL_EXISTS':
-                  errorMessage = 'This email exists already!'
-                  break;
-                case 'EMAIL_NOT_FOUND':
-                  errorMessage = 'This email not found!'
-                  break;
-                case 'INVALID_PASSWORD':
-                  errorMessage = 'Invalid password!'
-                  break;
-                case 'INVALID_LOGIN_CREDENTIALS':
-                  errorMessage = 'Invalid login or password!'
-                  break;
-                case 'USER_DISABLED':
-                  errorMessage = 'User disabled!'
-                  break;
-              
-                default:
-                  break;
-              }
-              return of(AuthActions.authenticationFail({errorMessage}));
-            })
-          );
+        return this.http
+          .post<AuthResponseData>(this.singUpEndpoint, {
+            email: authData.email,
+            password: authData.password,
+            returnSecureToken: true,
+          })
+          .pipe(map(handleAuthentication), catchError(handleError));
       })
     )
   );
 
-  authSuccess = createEffect(() => this.actions$.pipe(
-    ofType(AuthActions.authenticationSuccess),
-    tap(() => {
-      this.router.navigate(['/']);
-    })
-  ), {dispatch: false});
+  authLogin = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginStart),
+      switchMap((authData) => {
+        return this.http
+          .post<AuthResponseData>(this.singInEndpoint, {
+            email: authData.email,
+            password: authData.password,
+            returnSecureToken: true,
+          })
+          .pipe(map(handleAuthentication), catchError(handleError));
+      })
+    )
+  );
+
+  authRedirect = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.authenticationSuccess, AuthActions.logout),
+        tap(() => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
 }

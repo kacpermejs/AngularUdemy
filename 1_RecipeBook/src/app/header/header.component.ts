@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
-import { DropdownDirective } from '../directives/dropdown.directive';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DataStorageService } from '../services/data-storage/data-storage.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '../services/auth/auth.service';
 import { Subscription, map } from 'rxjs';
-import * as fromApp from "../store/app.reducer";
 import { Store } from '@ngrx/store';
+
+import { DropdownDirective } from '../directives/dropdown.directive';
+import { AuthService } from '../services/auth/auth.service';
+import { DataStorageService } from '../services/data-storage/data-storage.service';
+import * as fromApp from "../store/app.reducer";
+import * as AuthActions from "../store/auth/auth.actions";
 
 export enum Site {
   Shopping = 'shopping',
@@ -59,6 +60,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout() {
-    this.auth.logout();
+    this.store.dispatch(AuthActions.logout());
   }
 }

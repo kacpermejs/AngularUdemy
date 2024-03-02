@@ -24,7 +24,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error?: string = null;
-  authSub: Subscription;
 
   @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
   closeSub: Subscription;
@@ -45,9 +44,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (this.closeSub) {
       this.closeSub.unsubscribe();
     }
-    if (this.authSub) {
-      this.authSub.unsubscribe();
-    }
   }
 
   onSwitchMode() {
@@ -60,35 +56,19 @@ export class AuthComponent implements OnInit, OnDestroy {
     const email = form.value.email;
     const password = form.value.password;
 
-    //let authObs: Observable<AuthResponseData>;
-
     this.isLoading = true;
     if (this.isLoginMode) {
-      // authObs = this.authService.login(email, password);
       this.store.dispatch(AuthActions.loginStart({email, password}));
       
     } else {
-      //authObs = this.authService.signup(email, password); 
       this.store.dispatch(AuthActions.signUpStart({email, password}));
     }
-
-    // this.authSub = authObs.subscribe({
-    //   next: res => {
-    //     this.isLoading = false;
-    //     this.router.navigate(['/recipes']);
-    //   },
-    //   error: errorMessage => {
-    //     this.error = errorMessage;
-    //     this.showErrorAlert(errorMessage);
-    //     this.isLoading = false;
-    //   }
-    // });
     
     form.reset();
   }
 
   onHandleError() {
-    this.error = null;
+    this.store.dispatch(AuthActions.clearError());
   }
 
   private showErrorAlert(message: string) {

@@ -23,3 +23,7 @@ export const signUpStart = createAction(
   '[Auth] Sign up start',
   props<{email: string, password: string}>()
 );
+
+export const clearError = createAction(
+  '[Auth] Clear error'
+);

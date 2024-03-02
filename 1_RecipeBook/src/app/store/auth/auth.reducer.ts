@@ -16,7 +16,14 @@ export const initialState: State = {
 
 export const authReducer = createReducer(
   initialState,
-  on(AuthActions.loginStart, (state, action) => {
+  on(AuthActions.loginStart, (state) => {
+    return {
+      ...state,
+      authError: undefined,
+      loading: true
+    }
+  }),
+  on(AuthActions.signUpStart, (state) => {
     return {
       ...state,
       authError: undefined,
@@ -41,10 +48,16 @@ export const authReducer = createReducer(
       loading: false
     }
   }),
-  on(AuthActions.logout, (state, action) => {
+  on(AuthActions.logout, (state) => {
     return {
       ...state,
       user: undefined
     };
   }),
+  on(AuthActions.clearError, (state) => {
+    return {
+      ...state,
+      authError: undefined
+    };
+  })
 );
