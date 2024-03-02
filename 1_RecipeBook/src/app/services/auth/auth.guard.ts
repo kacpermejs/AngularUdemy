@@ -1,8 +1,8 @@
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, createUrlTreeFromSnapshot } from "@angular/router";
-import { AuthService } from "./auth.service";
 import { inject } from "@angular/core";
 import { map, take } from "rxjs";
 import { Store } from "@ngrx/store";
+
 import * as fromApp from "../../store/app.reducer";
 
 export const AuthGuard: CanActivateFn = (

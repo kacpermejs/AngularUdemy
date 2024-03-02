@@ -1,18 +1,23 @@
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { catchError, map, of, switchMap, tap } from "rxjs";
-import * as AuthActions from "./auth.actions";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AuthResponseData } from "../../models/auth-response.model";
-import { environment } from "../../../environments/environment";
-import * as fromApp from "../app.reducer";
 import { Router } from "@angular/router";
+import { catchError, map, of, switchMap, tap } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+
+import { environment } from "../../../environments/environment";
+import { AuthResponseData } from "../../models/auth-response.model";
+import { User } from "../../models/user.model";
+import * as AuthActions from "./auth.actions";
+import * as fromApp from "../app.reducer";
+import { AuthService } from "../../services/auth/auth.service";
 
 const handleAuthentication = (resData: AuthResponseData) => {
   const expirationDate = new Date(
     new Date().getTime() + +resData.expiresIn * 1000
   );
+  const user = new User(resData.email, resData.localId, resData.idToken, expirationDate);
+  localStorage.setItem('userData', JSON.stringify(user));
   return AuthActions.authenticationSuccess({
     email: resData.email,
     id: resData.localId,
@@ -62,7 +67,8 @@ export class AuthEffects {
     private actions$: Actions,
     private store: Store<fromApp.AppState>,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   authSignup = createEffect(() =>
@@ -75,7 +81,13 @@ export class AuthEffects {
             password: authData.password,
             returnSecureToken: true,
           })
-          .pipe(map(handleAuthentication), catchError(handleError));
+          .pipe(
+            tap((resData) => {
+              this.authService.setLogoutTimer(+resData.expiresIn * 1000)
+            }),
+            map(handleAuthentication),
+            catchError(handleError)
+          );
       })
     )
   );
@@ -90,15 +102,71 @@ export class AuthEffects {
             password: authData.password,
             returnSecureToken: true,
           })
-          .pipe(map(handleAuthentication), catchError(handleError));
+          .pipe(
+            tap((resData) =>{              
+              this.authService.setLogoutTimer(+resData.expiresIn * 1000);
+            }),
+            map(handleAuthentication),
+            catchError(handleError)
+          );
       })
     )
+  );
+
+  authAutoLogin = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.autoLogin),
+      map(() => {
+        const userData: {
+          email: string;
+          id: string;
+          _token: string;
+          _tokenExpirationDate: string;
+        } = JSON.parse(localStorage.getItem('userData'));
+        if (!userData) {
+          return { type: 'x' };
+        }
+
+        const expirationDate = new Date(userData._tokenExpirationDate);
+        const loadedUser = new User(
+          userData.email,
+          userData.id,
+          userData._token,
+          expirationDate
+        );
+
+        if (loadedUser.token) {
+          //token valid          
+          const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+          this.authService.setLogoutTimer(expirationDuration * 1000);
+
+          return AuthActions.authenticationSuccess({
+            email: loadedUser.email,
+            id: loadedUser.id,
+            _token: loadedUser.token,
+            _tokenExpirationDate: expirationDate,
+          });
+        }
+        return { type: 'x' };
+      })
+    )
+  );
+
+  authLogout = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.logout),
+      tap(() => {        
+        this.authService.clearLogoutTimer();
+        localStorage.removeItem('userData');
+        this.router.navigate(['/login']);
+      })
+    ), { dispatch: false }
   );
 
   authRedirect = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AuthActions.authenticationSuccess, AuthActions.logout),
+        ofType(AuthActions.authenticationSuccess),
         tap(() => {
           this.router.navigate(['/']);
         })

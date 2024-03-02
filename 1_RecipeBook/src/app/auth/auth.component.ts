@@ -2,14 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription, map, pipe } from 'rxjs';
+import { Subscription } from 'rxjs';
 
-import { AuthService } from '../services/auth/auth.service';
 import { AlertComponent } from '../alert/alert.component';
 import { PlaceholderDirective } from '../directives/placeholder.directive';
-import { AuthResponseData } from '../models/auth-response.model';
 import * as fromApp from '../store/app.reducer';
 import * as AuthActions from '../store/auth/auth.actions';
 
@@ -28,7 +25,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
   closeSub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router, private store: Store<fromApp.AppState>) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
     this.store.select('auth').subscribe(authState => {

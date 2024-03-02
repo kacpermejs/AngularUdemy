@@ -5,7 +5,6 @@ import { Subscription, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { DropdownDirective } from '../directives/dropdown.directive';
-import { AuthService } from '../services/auth/auth.service';
 import { DataStorageService } from '../services/data-storage/data-storage.service';
 import * as fromApp from "../store/app.reducer";
 import * as AuthActions from "../store/auth/auth.actions";
@@ -30,7 +29,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private dataService: DataStorageService,
-    private auth: AuthService,
     private store: Store<fromApp.AppState>
   ) {}
 

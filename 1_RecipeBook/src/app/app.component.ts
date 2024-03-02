@@ -1,11 +1,14 @@
 import { Component, OnInit, enableProdMode, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent, Site } from './header/header.component';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import { RecipesComponent } from './recipes/recipes.component';
 import { RouterOutlet } from '@angular/router';
-import { AuthService } from './services/auth/auth.service';
-import { environment } from '../environments/environment.development';
+import { Store } from '@ngrx/store';
+
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
+import { HeaderComponent } from './header/header.component';
+import { RecipesComponent } from './recipes/recipes.component';
+import { environment } from '../environments/environment';
+import * as fromApp from './store/app.reducer';
+import * as AuthActions from './store/auth/auth.actions';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +20,7 @@ import { environment } from '../environments/environment.development';
 export class AppComponent implements OnInit{
   title = 'RecipeBook';
 
-  constructor(private auth: AuthService) {
+  constructor(private store: Store<fromApp.AppState>) {
     console.log('Env prod: ' + environment.production);
     if (environment.production) {
       enableProdMode();
@@ -26,6 +29,7 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.auth.autoLogin();
+    this.store.dispatch(AuthActions.autoLogin());
+    this.store.dispatch
   }
 }
