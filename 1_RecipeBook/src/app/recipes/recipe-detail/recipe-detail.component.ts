@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeService } from '../../services/recipe/recipe.service';
 import { Store } from '@ngrx/store';
+import * as fromApp from '../../store/app.reducer';
 import * as fromShoppingList from '../../store/shopping-list/shopping-list.reducer';
 import * as shoppingListActions from '../../store/shopping-list/shopping-list.actions';
 
@@ -23,7 +24,7 @@ export class RecipeDetailComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private store: Store<fromShoppingList.AppState>, 
+    private store: Store<fromApp.AppState>, 
     private recipeService: RecipeService) {}
 
   ngOnInit() {

@@ -7,8 +7,8 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
-import * as fromShoppingList from './store/shopping-list/shopping-list.reducer';
 import { environment } from '../environments/environment.development';
+import * as fromApp from './store/app.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,9 +19,7 @@ export const appConfig: ApplicationConfig = {
         useClass: AuthInterceptorService,
         multi: true
     },
-    provideStore({
-      shoppingList: fromShoppingList.shoppingListReducer
-    }),
+    provideStore(fromApp.appReducer),
     provideEffects([
       
     ]),

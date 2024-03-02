@@ -3,6 +3,7 @@ import { ShoppingListEditComponent } from './shopping-list-edit/shopping-list-ed
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
 import * as fromShoppingList from '../store/shopping-list/shopping-list.reducer';
 import * as ShoppingListActions from '../store/shopping-list/shopping-list.actions';
 
@@ -18,7 +19,7 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   //igAddedSubscription: Subscription;
 
   constructor(
-    private store: Store<fromShoppingList.AppState>) {}
+    private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
 

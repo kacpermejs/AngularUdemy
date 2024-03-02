@@ -5,7 +5,9 @@ import { RouterModule } from '@angular/router';
 import { DataStorageService } from '../services/data-storage/data-storage.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../services/auth/auth.service';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
+import * as fromApp from "../store/app.reducer";
+import { Store } from '@ngrx/store';
 
 export enum Site {
   Shopping = 'shopping',
@@ -17,7 +19,7 @@ export enum Site {
   standalone: true,
   imports: [CommonModule, DropdownDirective, RouterModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   Site = Site;
@@ -25,21 +27,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userSub: Subscription;
   isAuthenticated = false;
 
-  constructor(private dataService: DataStorageService, private auth: AuthService) {}
-  
+  constructor(
+    private dataService: DataStorageService,
+    private auth: AuthService,
+    private store: Store<fromApp.AppState>
+  ) {}
+
   ngOnInit(): void {
-    this.userSub = this.auth.user.subscribe( user => {
-      this.isAuthenticated = !!user;
-    });
+    this.userSub = this.store
+      .select('auth')
+      .pipe(map((authState) => authState.user))
+      .subscribe((user) => {
+        this.isAuthenticated = !!user;
+      });
   }
 
   ngOnDestroy(): void {
     this.userSub?.unsubscribe();
   }
-  
+
   onSaveData() {
     this.dataService.storeRecipes();
-    
   }
 
   private fetchData() {
@@ -49,9 +57,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onFetchData() {
     this.fetchData();
   }
-  
+
   onLogout() {
     this.auth.logout();
   }
-
 }

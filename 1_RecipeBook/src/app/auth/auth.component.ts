@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { AuthResponseData, AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AlertComponent } from '../alert/alert.component';
 import { PlaceholderDirective } from '../directives/placeholder.directive';
+import { AuthResponseData } from '../models/auth-response.model';
 
 @Component({
   selector: 'app-auth',
