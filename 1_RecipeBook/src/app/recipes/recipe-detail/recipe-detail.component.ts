@@ -3,11 +3,10 @@ import { Recipe } from '../../models/recipe.model';
 import { DropdownDirective } from '../../directives/dropdown.directive';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { RecipeService } from '../../services/recipe/recipe.service';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
-import * as fromShoppingList from '../../store/shopping-list/shopping-list.reducer';
-import * as shoppingListActions from '../../store/shopping-list/shopping-list.actions';
+import * as ShoppingListActions from '../../store/shopping-list/shopping-list.actions';
+import * as RecipesActions from '../../store/recipes/recipes.actions';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -24,8 +23,7 @@ export class RecipeDetailComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private store: Store<fromApp.AppState>, 
-    private recipeService: RecipeService) {}
+    private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
     this.activatedRoute.data.subscribe(data => {
@@ -37,11 +35,11 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   addToShoppingList() {
-    this.store.dispatch(shoppingListActions.addIngredients({ingredients: this.recipe.ingredients}));
+    this.store.dispatch(ShoppingListActions.addIngredients({ingredients: this.recipe.ingredients}));
   }
 
   onDelete() {
-    this.recipeService.deleteRecipe(this.id);
+    this.store.dispatch(RecipesActions.deleteRecipe({ id: this.id }));
     this.router.navigate(['/recipes']);
   }
 }

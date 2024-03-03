@@ -5,9 +5,9 @@ import { Subscription, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { DropdownDirective } from '../directives/dropdown.directive';
-import { DataStorageService } from '../services/data-storage/data-storage.service';
 import * as fromApp from "../store/app.reducer";
 import * as AuthActions from "../store/auth/auth.actions";
+import * as RecipesActions from "../store/recipes/recipes.actions";
 
 export enum Site {
   Shopping = 'shopping',
@@ -28,7 +28,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
 
   constructor(
-    private dataService: DataStorageService,
     private store: Store<fromApp.AppState>
   ) {}
 
@@ -46,11 +45,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onSaveData() {
-    this.dataService.storeRecipes();
+    this.store.dispatch(RecipesActions.storeRecipes());
   }
 
   private fetchData() {
-    this.dataService.fetchRecipes().subscribe();
+    // this.dataService.fetchRecipes().subscribe();
+    this.store.dispatch(RecipesActions.fetchRecipes());
   }
 
   onFetchData() {
@@ -58,6 +58,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout() {
+    console.log('logout head');
+
     this.store.dispatch(AuthActions.logout());
   }
 }

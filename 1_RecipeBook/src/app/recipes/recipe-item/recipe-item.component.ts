@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Recipe } from '../../models/recipe.model';
-import { RecipeService } from '../../services/recipe/recipe.service';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -14,5 +13,5 @@ export class RecipeItemComponent {
   @Input() id: number;
   @Input() recipe: Recipe;
   
-  constructor(private recipeService: RecipeService) {}
+  constructor() {}
 }

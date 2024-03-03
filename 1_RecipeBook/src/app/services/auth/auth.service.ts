@@ -14,16 +14,16 @@ export class AuthService {
   constructor(private store: Store<fromApp.AppState>) { }
 
   setLogoutTimer(expirationDuration: number) {
-    if (this.tokenExpirationTimer) {
-      clearTimeout(this.tokenExpirationTimer);
-    }
+    console.log('timer set to %d s', expirationDuration / 1000); 
     
     this.tokenExpirationTimer = setTimeout(() => {
       this.store.dispatch(AuthActions.logout());
     }, expirationDuration);
   }
 
-  clearLogoutTimer() {    
+  clearLogoutTimer() {
+    console.log('timer cleared');
+    
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
       this.tokenExpirationTimer = null;
